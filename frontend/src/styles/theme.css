@@ -1,0 +1,17 @@
+:root {
+  --bg-primary: #f5f0e6;
+  --bg-secondary: #fffaf0;
+  --text-primary: #2b2520;
+  --text-muted: #74685d;
+  --border-color: rgba(74, 61, 51, 0.18);
+  --accent-primary: #2f6f5e;
+}
+
+.dark {
+  --bg-primary: #17130f;
+  --bg-secondary: #241f1a;
+  --text-primary: #eee4d7;
+  --text-muted: #b9aa9b;
+  --border-color: rgba(238, 228, 215, 0.18);
+  --accent-primary: #7bd7b4;
+}
