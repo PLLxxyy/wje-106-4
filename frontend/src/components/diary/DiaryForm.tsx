@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MEAL_TYPE_LABEL, MEAL_TYPES, MoodType, type MealType } from '../../constants/enums';
 import { DEFAULT_PORTION, DEFAULT_UNIT } from '../../constants/mealDefaults';
 import { BUTTON_LABELS, FORM_FIELD_LABELS } from '../../constants/ui';
 import { useDiaryStore } from '../../stores/useDiaryStore';
 import { useFoodStore } from '../../stores/useFoodStore';
-import { useMealTemplateStore } from '../../stores/useMealTemplateStore';
 import type { AnnotationData, DiaryEntry, FoodRecord } from '../../types/diary';
-import type { MealTemplate } from '../../types/mealTemplate';
 import { todayISO } from '../../utils/dateUtils';
 import { notifyError } from '../../utils/errorBus';
 import { createId } from '../../utils/id';
@@ -46,46 +44,19 @@ const manualFieldLabels: Record<ManualFoodField, string> = {
   carb: FORM_FIELD_LABELS.carb,
 };
 
-const templateFoodToRecord = (tf: {
-  id: string;
-  name: string;
-  portion: number;
-  unit: string;
-  calories: number;
-  protein: number;
-  fat: number;
-  carb: number;
-}): FoodRecord => ({
-  id: createId(),
-  name: tf.name,
-  portion: tf.portion,
-  unit: tf.unit,
-  calories: tf.calories,
-  protein: tf.protein,
-  fat: tf.fat,
-  carb: tf.carb,
-});
-
 export const DiaryForm = ({ entry, onSaved }: DiaryFormProps) => {
   const saveEntry = useDiaryStore((state) => state.saveToDB);
   const foodsLibrary = useFoodStore((state) => state.items);
-  const templates = useMealTemplateStore((state) => state.templates);
   const [date, setDate] = useState(todayISO());
   const [mealType, setMealType] = useState<MealType>(MEAL_TYPES[0]);
   const [foods, setFoods] = useState<FoodRecord[]>([]);
   const [manualFood, setManualFood] = useState<FoodRecord>(emptyFood);
   const [selectedFoodId, setSelectedFoodId] = useState('');
-  const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [photo, setPhoto] = useState('');
   const [annotation, setAnnotation] = useState<AnnotationData>(emptyAnnotations);
   const [mood, setMood] = useState<MoodType>(MoodType.GOOD);
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
-
-  const filteredTemplates = useMemo(
-    () => templates.filter((tpl) => tpl.mealType === mealType),
-    [mealType, templates],
-  );
 
   useEffect(() => {
     if (!entry) {
@@ -108,17 +79,6 @@ export const DiaryForm = ({ entry, onSaved }: DiaryFormProps) => {
     }
     setFoods((current) => [...current, createFoodRecord(item)]);
     setSelectedFoodId('');
-  };
-
-  const applyTemplate = () => {
-    const tpl = templates.find((t) => t.id === selectedTemplateId) as MealTemplate | undefined;
-    if (!tpl) {
-      notifyError('请先选择一个模板。');
-      return;
-    }
-    const newRecords = tpl.foods.map((tf) => templateFoodToRecord(tf));
-    setFoods((current) => [...current, ...newRecords]);
-    setSelectedTemplateId('');
   };
 
   const addManualFood = () => {
@@ -213,27 +173,6 @@ export const DiaryForm = ({ entry, onSaved }: DiaryFormProps) => {
 
       <section className="rounded-xl border border-stone-200 bg-white/80 p-5 dark:border-stone-700 dark:bg-stone-900/80">
         <h2 className="mb-4 text-lg font-semibold text-stone-900 dark:text-stone-100">添加食物</h2>
-
-        {filteredTemplates.length > 0 ? (
-          <div className="mb-5 grid gap-3 md:grid-cols-[1fr_auto]">
-            <select
-              value={selectedTemplateId}
-              onChange={(event) => setSelectedTemplateId(event.target.value)}
-              className="rounded-lg border border-stone-300 bg-white px-3 py-2 dark:border-stone-700 dark:bg-stone-950"
-            >
-              <option value="">选择餐食模板（自动带出食物和份量）</option>
-              {filteredTemplates.map((tpl) => (
-                <option key={tpl.id} value={tpl.id}>
-                  {tpl.name} · {tpl.foods.length} 种食物
-                </option>
-              ))}
-            </select>
-            <button type="button" onClick={applyTemplate} className="rounded-lg bg-honey px-4 py-2 text-stone-900">
-              使用模板
-            </button>
-          </div>
-        ) : null}
-
         <div className="grid gap-3 md:grid-cols-[1fr_auto]">
           <select
             value={selectedFoodId}

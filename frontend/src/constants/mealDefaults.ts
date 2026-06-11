@@ -10,7 +10,6 @@ export const EXPORT_FILE_PREFIX = 'food-diary-backup';
 export const DATABASE_NAME = 'FoodDiaryDB';
 export const THEME_STORAGE_KEY = 'food-diary-theme';
 export const SEED_STORAGE_KEY = 'food-diary-seeded';
-export const MEAL_TEMPLATE_STORAGE_KEY = 'food-diary-meal-templates';
 export const DATA_VERSION = 1;
 export const TOAST_AUTO_CLOSE_MS = 4200;
 export const CHART_HEIGHT = 280;
