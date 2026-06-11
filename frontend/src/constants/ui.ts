@@ -31,6 +31,7 @@ export const FORM_FIELD_LABELS = {
   protein: '蛋白质',
   fat: '脂肪',
   carb: '碳水',
+  templateName: '模板名称',
 };
 
 export const BUTTON_LABELS = {
@@ -42,4 +43,7 @@ export const BUTTON_LABELS = {
   export: '导出数据',
   import: '导入数据',
   clear: '清空数据',
+  useTemplate: '使用模板',
+  manageTemplate: '管理模板',
+  saveAsTemplate: '存为模板',
 };

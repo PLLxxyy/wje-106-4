@@ -9,6 +9,7 @@ import { AppRoutes } from './router';
 import { useDiaryStore } from './stores/useDiaryStore';
 import { useFoodStore } from './stores/useFoodStore';
 import { useGoalStore } from './stores/useGoalStore';
+import { useTemplateStore } from './stores/useTemplateStore';
 import { useThemeStore } from './stores/useThemeStore';
 import { notifyError } from './utils/errorBus';
 
@@ -17,6 +18,7 @@ export const App = () => {
   const loadDiary = useDiaryStore((state) => state.loadFromDB);
   const loadFoods = useFoodStore((state) => state.loadFromDB);
   const loadGoal = useGoalStore((state) => state.loadFromDB);
+  const loadTemplates = useTemplateStore((state) => state.loadFromDB);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ export const App = () => {
       try {
         initTheme();
         await seedInitialData();
-        await Promise.all([loadDiary(), loadFoods(), loadGoal()]);
+        await Promise.all([loadDiary(), loadFoods(), loadGoal(), loadTemplates()]);
       } catch {
         notifyError('应用初始化失败，请刷新页面。');
       } finally {
@@ -32,7 +34,7 @@ export const App = () => {
       }
     };
     void start();
-  }, [initTheme, loadDiary, loadFoods, loadGoal]);
+  }, [initTheme, loadDiary, loadFoods, loadGoal, loadTemplates]);
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
